@@ -119,83 +119,35 @@
             background-color: #444;
         }
 
+        .fullscreen-toggle {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .fullscreen-toggle:hover {
+            background-color: #444;
+            transform: scale(1.1);
+        }
+
         .info-icon {
             position: absolute;
             top: 10px;
             left: 10px;
             font-size: 18px;
             color: #82ccdd;
-        }
-
-        /* Media Queries */
-        @media screen and (max-width: 768px) {
-            .container {
-                width: 95%;
-                max-width: 350px;
-            }
-
-            .card {
-                padding: 15px;
-            }
-
-            .card h1 {
-                font-size: 20px;
-            }
-
-            .card p {
-                font-size: 13px;
-            }
-
-            .card input {
-                font-size: 12px;
-                padding: 6px;
-            }
-
-            #play-button {
-                font-size: 14px;
-                padding: 8px 12px;
-            }
-
-            .theme-toggle button {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-            }
-        }
-
-        @media screen and (max-width: 480px) {
-            .container {
-                width: 100%;
-                max-width: 320px;
-            }
-
-            .card {
-                padding: 10px;
-                border-radius: 15px;
-            }
-
-            .card h1 {
-                font-size: 18px;
-            }
-
-            .card p {
-                font-size: 12px;
-            }
-
-            .card label {
-                font-size: 12px;
-            }
-
-            #play-button {
-                font-size: 12px;
-                padding: 6px 10px;
-            }
-
-            .theme-toggle button {
-                width: 30px;
-                height: 30px;
-                font-size: 14px;
-            }
         }
     </style>
 </head>
@@ -220,19 +172,41 @@
         <div class="theme-toggle">
             <button id="dark-mode-toggle">🌙</button>
             <button id="instructions-toggle">📜</button>
+            <button id="fullscreen-toggle">🔳</button>
         </div>
+        <button class="fullscreen-toggle" id="play-pause-toggle">⏸️</button>
     </div>
     <script>
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         const instructionsToggle = document.getElementById('instructions-toggle');
+        const fullscreenToggle = document.getElementById('fullscreen-toggle');
+        const playPauseToggle = document.getElementById('play-pause-toggle');
         const body = document.body;
 
+        // Alternar modo oscuro
         darkModeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
         });
 
+        // Mostrar instrucciones
         instructionsToggle.addEventListener('click', () => {
             alert('Instrucciones:\n1. Selecciona un archivo de video en formato MP4.\n2. Selecciona un archivo de subtítulos en formato SRT.\n3. Haz clic en el botón "Reproducir".');
+        });
+
+        // Alternar pantalla completa
+        fullscreenToggle.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        // Alternar pausa/reproducción
+        let isPlaying = false;
+        playPauseToggle.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            playPauseToggle.textContent = isPlaying ? '▶️' : '⏸️';
         });
 
         body.classList.add('dark-mode'); // Default dark mode
