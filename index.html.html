@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reproductor con Subtítulos</title>
+    <style>
+        /* Configuración base */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h1 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #f3f3f3;
+        }
+
+        .card p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .card label {
+            display: block;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #f0f0f0;
+        }
+
+        .card input {
+            display: block;
+            margin-top: 5px;
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .card input::file-selector-button {
+            background-color: #6a89cc;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #play-button {
+            background: linear-gradient(135deg, #6a89cc, #82ccdd);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-toggle button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .theme-toggle button:hover {
+            transform: rotate(20deg);
+            background-color: #444;
+        }
+
+        .info-icon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+            color: #82ccdd;
+        }
+
+        /* Media Queries */
+        @media screen and (max-width: 768px) {
+            .container {
+                width: 95%;
+                max-width: 350px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .card h1 {
+                font-size: 20px;
+            }
+
+            .card p {
+                font-size: 13px;
+            }
+
+            .card input {
+                font-size: 12px;
+                padding: 6px;
+            }
+
+            #play-button {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+
+            .theme-toggle button {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .container {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .card {
+                padding: 10px;
+                border-radius: 15px;
+            }
+
+            .card h1 {
+                font-size: 18px;
+            }
+
+            .card p {
+                font-size: 12px;
+            }
+
+            .card label {
+                font-size: 12px;
+            }
+
+            #play-button {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .theme-toggle button {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="info-icon">ℹ️</div>
+            <h1>Reproductor con Subtítulos</h1>
+            <p>Selecciona tu video y archivo de subtítulos</p>
+            <form>
+                <label for="video">
+                    <span>🎥 Video (mp4)</span>
+                    <input type="file" id="video" accept=".mp4">
+                </label>
+                <label for="subtitles">
+                    <span>📝 Subtítulos (srt)</span>
+                    <input type="file" id="subtitles" accept=".srt">
+                </label>
+                <button type="button" id="play-button">▶️ Reproducir</button>
+            </form>
+        </div>
+        <div class="theme-toggle">
+            <button id="dark-mode-toggle">🌙</button>
+            <button id="instructions-toggle">📜</button>
+        </div>
+    </div>
+    <script>
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const instructionsToggle = document.getElementById('instructions-toggle');
+        const body = document.body;
+
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+        });
+
+        instructionsToggle.addEventListener('click', () => {
+            alert('Instrucciones:\n1. Selecciona un archivo de video en formato MP4.\n2. Selecciona un archivo de subtítulos en formato SRT.\n3. Haz clic en el botón "Reproducir".');
+        });
+
+        body.classList.add('dark-mode'); // Default dark mode
+    </script>
+</body>
+</html>
