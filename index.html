@@ -4,358 +4,405 @@
   <meta charset="UTF-8">
   <title>Examen de Vitaminas - Bioquímica</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
-    .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    .question { font-size: 1.2em; margin-bottom: 10px; }
-    .options { margin-bottom: 20px; }
-    .options div { margin-bottom: 8px; }
-    .feedback { margin-top: 20px; font-style: italic; }
-    button { padding: 8px 12px; margin: 5px 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 20px;
+    }
+    .container {
+      max-width: 700px;
+      background: #fff;
+      padding: 20px;
+      margin: auto;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    .question-title {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .options, .matching {
+      margin-bottom: 15px;
+    }
+    .option-item, .match-item {
+      margin-bottom: 8px;
+    }
+    .nav-buttons {
+      margin-top: 20px;
+    }
+    button {
+      padding: 8px 12px;
+      margin-right: 10px;
+    }
+    .feedback {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .nav-list {
+      margin-bottom: 20px;
+    }
+    .nav-list button {
+      margin: 2px;
+      padding: 4px 8px;
+      font-size: 0.9em;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="nav-list" id="navList"></div>
     <div id="quiz"></div>
+    <div class="nav-buttons">
+      <button onclick="prevQuestion()">Anterior</button>
+      <button onclick="nextQuestion()">Siguiente</button>
+    </div>
   </div>
 
   <script>
-    // Array de preguntas con opciones, respuesta correcta y retroalimentación en palabras clave
+    // Definición de las preguntas
     const questions = [
       {
-        question: "¿Cuál es la tríada clásica de síntomas en la deficiencia de niacina (vitamina B3)?",
+        question: "La osteomalacia (fractura espontánea) es una de sus características de la deficiencia de:",
+        type: "multiple",
         options: {
-          a: "Dermatitis, diarrea, demencia",
-          b: "Estomatitis, anemia y dolor articular",
-          c: "Hipotensión, bradicardia y anorexia",
-          d: "Fatiga, parestesias y disfagia"
+          a: "Vitamina C",
+          b: "Vitamina D",
+          c: "Vitamina K",
+          d: "Vitamina A"
         },
-        correct: "a",
-        feedback: "Pellagra, deficiencia de niacina, síntomas dermatológicos, gastrointestinales y neurológicos."
+        correct: "b"
       },
       {
-        question: "¿Qué forma activa de la vitamina B6 actúa como coenzima en reacciones de transaminación?",
+        question: "La vitamina B2 es necesaria para formar o sintetizar:",
+        type: "multiple",
         options: {
-          a: "Tiamina pirofosfato",
-          b: "Fosfato de piridoxal (PLP)",
-          c: "Flavina mononucleótido (FMN)",
-          d: "Ácido fólico"
+          a: "Esteroides progesterona",
+          b: "Coenzima Q",
+          c: "Coenzima FAD y FMN",
+          d: "Coenzima A"
         },
-        correct: "b",
-        feedback: "Vitamina B6, PLP, transaminación, metabolismo de aminoácidos."
+        correct: "c"
       },
       {
-        question: "La deficiencia de vitamina B12 se asocia principalmente con:",
+        question: "P1. Indique las coenzimas que pueden producir hipervitaminosis:",
+        type: "multiple",
         options: {
-          a: "Anemia ferropénica",
-          b: "Anemia megaloblástica y neuropatía subaguda combinada",
-          c: "Anemia hemolítica",
-          d: "Anemia sideroblástica"
-        },
-        correct: "b",
-        feedback: "B12, anemia megaloblástica, neuropatía, síntesis de ADN y mantenimiento de la mielina."
-      },
-      {
-        question: "La vitamina C facilita la absorción del hierro al:",
-        options: {
-          a: "Incrementar la secreción de ácido gástrico",
-          b: "Reducir el hierro férrico (Fe³⁺) a hierro ferroso (Fe²⁺)",
-          c: "Inhibir la formación de complejos insolubles",
-          d: "Estimular la producción de transferrina"
-        },
-        correct: "b",
-        feedback: "Vitamina C, reducción de hierro, mejora de la absorción y prevención de la anemia."
-      },
-      {
-        question: "El ácido pantoténico (vitamina B5) es esencial para:",
-        options: {
-          a: "La síntesis de coenzima A",
-          b: "La formación de NADPH",
-          c: "La síntesis de FAD",
-          d: "La producción de vitamina K"
-        },
-        correct: "a",
-        feedback: "Vitamina B5, coenzima A, metabolismo de ácidos grasos y ciclo de Krebs."
-      },
-      {
-        question: "La vitamina B7 (biotina) actúa como coenzima en reacciones de:",
-        options: {
-          a: "Descarboxilación",
-          b: "Carboxilación",
-          c: "Oxidación-reducción",
-          d: "Metilación"
-        },
-        correct: "b",
-        feedback: "Biotina, vitamina B7, carboxilación, metabolismo de ácidos grasos y gluconeogénesis."
-      },
-      {
-        question: "Para la absorción intestinal de la vitamina B12 es esencial la unión con:",
-        options: {
-          a: "Factor intrínseco",
-          b: "Transcobalamina",
+          a: "Vitamina K",
+          b: "Vitamina B1",
           c: "Ácido fólico",
-          d: "Coenzima Q"
+          d: "Vitamina D"
         },
-        correct: "a",
-        feedback: "Vitamina B12, factor intrínseco, absorción en íleon y prevención de anemia perniciosa."
+        correct: "d"
       },
       {
-        question: "¿Cuál de las siguientes funciones depende críticamente de la vitamina A en el proceso visual?",
-        options: {
-          a: "Activación de melanopsina en los conos",
-          b: "Formación de la rodopsina en los bastones",
-          c: "Regulación de la fototransducción en células ganglionares",
-          d: "Conversión de retinol a retinoestearato"
-        },
-        correct: "b",
-        feedback: "Vitamina A, rodopsina, visión nocturna, retinol y función en conos y bastones."
-      },
-      {
-        question: "La principal función de la vitamina D en el metabolismo óseo es:",
-        options: {
-          a: "Estimular la resorción ósea",
-          b: "Facilitar la absorción intestinal de calcio y fósforo",
-          c: "Inhibir la actividad osteoclástica",
-          d: "Promover la síntesis de colágeno"
-        },
-        correct: "b",
-        feedback: "Vitamina D, absorción de calcio y fósforo, mineralización ósea y salud del esqueleto."
-      },
-      {
-        question: "La hipervitaminosis A puede manifestarse clínicamente con:",
-        options: {
-          a: "Hipercalcemia y nefrocalcinosis",
-          b: "Hepatotoxicidad y aumento de presión intracraneal",
-          c: "Alteraciones en el ciclo menstrual",
-          d: "Hipoglucemia y aumento de insulina"
-        },
-        correct: "b",
-        feedback: "Exceso de vitamina A, hepatotoxicidad, presión intracraneal elevada y toxicidad sistémica."
-      },
-      {
-        question: "La deficiencia de vitamina E se asocia principalmente con:",
-        options: {
-          a: "Neuropatía central y ataxia",
-          b: "Ceguera nocturna",
-          c: "Dermatitis seborreica",
-          d: "Alteraciones en la coagulación"
-        },
-        correct: "a",
-        feedback: "Vitamina E, antioxidante, protección neuronal y prevención de ataxia y daño oxidativo."
-      },
-      {
-        question: "La administración prolongada de isoniazida se relaciona con la deficiencia de:",
-        options: {
-          a: "Vitamina B1",
-          b: "Vitamina B6",
-          c: "Vitamina B12",
-          d: "Ácido fólico"
-        },
-        correct: "b",
-        feedback: "Isoniazida, interferencia con vitamina B6, riesgo de neuropatía y necesidad de suplementación."
-      },
-      {
-        question: "La niacina (vitamina B3) es precursora de:",
-        options: {
-          a: "Coenzima A",
-          b: "NAD⁺ y NADP⁺",
-          c: "FAD y FMN",
-          d: "ATP"
-        },
-        correct: "b",
-        feedback: "Vitamina B3, niacina, NAD⁺, NADP⁺, metabolismo energético y reacciones redox."
-      },
-      {
-        question: "La riboflavina (vitamina B2) es necesaria para la formación de:",
-        options: {
-          a: "Coenzima Q",
-          b: "FAD y FMN, implicadas en reacciones redox",
-          c: "Ácido fólico",
-          d: "Vitamina K"
-        },
-        correct: "b",
-        feedback: "Vitamina B2, riboflavina, formación de FAD y FMN, reacciones redox y producción de energía."
-      },
-      {
-        question: "La función antioxidante de la vitamina E se basa en:",
-        options: {
-          a: "La eliminación de metales pesados",
-          b: "La protección de las membranas lipídicas contra la peroxidación",
-          c: "La activación de enzimas catalíticas en el núcleo",
-          d: "La inhibición de radicales hidroxilo en el citosol"
-        },
-        correct: "b",
-        feedback: "Vitamina E, antioxidante, protección de lípidos, prevención de peroxidación y daño celular."
-      },
-      {
-        question: "¿Cuál es la forma circulante más abundante y estable de la vitamina D en el plasma?",
+        question: "P2. ¿Cuáles de las siguientes vitaminas actúan como hormonas?",
+        type: "multiple-select",
         options: {
           a: "1,25-dihidroxicolecalciferol",
-          b: "25-hidroxicolecalciferol",
-          c: "24,25-dihidroxicolecalciferol",
-          d: "Colecalciferol"
+          b: "Ácido retinoico",
+          c: "Vitamina B12",
+          d: "Las vitaminas no son hormonas sino cofactores enzimáticos"
         },
-        correct: "b",
-        feedback: "Vitamina D, 25(OH)D, forma estable en plasma, evaluación clínica y almacenamiento."
+        correct: ["a", "b"]
       },
       {
-        question: "En relación con las vitaminas liposolubles, es correcto afirmar que:",
+        question: "P3. La vitamina K:",
+        type: "multiple-select",
         options: {
-          a: "Se eliminan rápidamente por vía renal",
-          b: "Se almacenan en el hígado y tejido adiposo",
-          c: "Requieren un transporte activo para su absorción intestinal",
-          d: "Son menos propensas a causar toxicidad"
+          a: "Es una coenzima",
+          b: "Favorece la coagulación",
+          c: "Necesita ácidos biliares para su absorción",
+          d: "Debe aportarse en la dieta"
         },
-        correct: "b",
-        feedback: "Vitaminas liposolubles, almacenamiento en hígado y grasa, riesgo de toxicidad en exceso."
+        correct: ["a", "b", "c", "d"]
       },
       {
-        question: "El ácido retinoico, derivado de la vitamina A, participa en:",
+        question: "P4. La vitamina que forma parte de la coenzima de la piruvato deshidrogenasa:",
+        type: "multiple",
         options: {
-          a: "La síntesis de rodopsina",
-          b: "La regulación de la expresión génica y la diferenciación celular",
-          c: "La formación de coenzima A",
-          d: "La degradación de la melanina"
+          a: "Es la Vitamina B2",
+          b: "Su deficiencia causa reducción de ATP",
+          c: "Su deficiencia causa reducción de piruvato",
+          d: "Participa en la ruta de las pentosas fosfato"
         },
-        correct: "b",
-        feedback: "Ácido retinoico, vitamina A, regulación génica, diferenciación celular y desarrollo embrionario."
+        correct: "a"
       },
       {
-        question: "La vitamina K es esencial para la activación de proteínas como la osteocalcina, la cual:",
+        question: "P5. Indica las vitaminas relacionadas con la síntesis de ADN:",
+        type: "multiple-select",
         options: {
-          a: "Regula la respuesta inflamatoria",
-          b: "Contribuye a la mineralización ósea",
-          c: "Estimula la absorción de calcio en el intestino",
-          d: "Participa en la síntesis de colágeno"
+          a: "Ácido fólico",
+          b: "Ácido pantoténico",
+          c: "Tiamina",
+          d: "Cobalamina"
         },
-        correct: "b",
-        feedback: "Vitamina K, osteocalcina, coagulación, activación de proteínas y mineralización ósea."
+        correct: ["a", "d"]
       },
       {
-        question: "Aunque no es una vitamina, la coenzima Q10 es fundamental en:",
-        options: {
-          a: "El transporte de electrones en la cadena respiratoria",
-          b: "La síntesis de ácidos grasos",
-          c: "La regulación del ciclo celular",
-          d: "La degradación de proteínas"
+        question: "P6. Relaciona las siguientes coenzimas con las vitaminas que las constituyen:",
+        type: "matching",
+        leftItems: ["PPT", "FAD", "Fosfato de piridoxamina", "FMN", "NADP", "Coenzima A", "NAD", "PLP", "FH4", "Metilcobalamina"],
+        matchOptions: {
+          a: "Ácido nicotínico",
+          b: "Cobalamina",
+          c: "Riboflavina",
+          d: "Ácido fólico",
+          e: "Ácido pantoténico",
+          f: "Piridoxina",
+          g: "Tiamina"
         },
-        correct: "a",
-        feedback: "Coenzima Q10, transporte de electrones, función mitocondrial y producción de ATP."
+        correctMapping: ["f", "c", "f", "c", "a", "e", "a", "f", "d", "b"]
       },
       {
-        question: "La deficiencia de riboflavina (vitamina B2) puede manifestarse clínicamente con:",
-        options: {
-          a: "Estomatitis, labios agrietados y dermatitis",
-          b: "Ceguera nocturna",
-          c: "Neuropatía periférica",
-          d: "Ictericia"
+        question: "P7. Relaciona las siguientes vitaminas con las funciones metabólicas:",
+        type: "matching",
+        leftItems: ["Redox", "Carboxilación", "Transferencia CO2", "Descarboxilasa", "Transferencia de un grupo acetilo", "Transferencia grupos acilo", "Transferencia grupos amino", "Transferencia grupos metilo", "Hidroxilación"],
+        matchOptions: {
+          a: "Tiamina",
+          b: "Riboflavina",
+          c: "Ácido pantoténico",
+          d: "Piridoxina",
+          e: "Ácido fólico",
+          f: "Cobalamina",
+          g: "Ácido nicotínico",
+          h: "Ácido ascórbico",
+          i: "Biotina",
+          j: "Vitamina K"
         },
-        correct: "a",
-        feedback: "Vitamina B2, riboflavina, deficiencia, estomatitis, dermatitis y labios agrietados."
+        // Asignación según el razonamiento:
+        // 1. Redox -> g) Ácido nicotínico
+        // 2. Carboxilación -> i) Biotina
+        // 3. Transferencia CO2 -> a) Tiamina
+        // 4. Descarboxilasa -> d) Piridoxina
+        // 5. Transferencia de un grupo acetilo -> c) Ácido pantoténico
+        // 6. Transferencia grupos acilo -> c) Ácido pantoténico
+        // 7. Transferencia grupos amino -> d) Piridoxina
+        // 8. Transferencia grupos metilo -> e) Ácido fólico
+        // 9. Hidroxilación -> h) Ácido ascórbico
+        correctMapping: ["g", "i", "a", "d", "c", "c", "d", "e", "h"]
       },
       {
-        question: "Una deficiencia de ácido fólico se relaciona con el aumento de los niveles plasmáticos de:",
+        question: "P8. Indica qué vitaminas pueden causar anemia:",
+        type: "multiple-select",
         options: {
-          a: "Colesterol",
-          b: "Homocisteína",
-          c: "Ácido láctico",
-          d: "Creatinina"
+          a: "Ácido fólico",
+          b: "Vitamina K",
+          c: "Piridoxina",
+          d: "Cobalamina"
         },
-        correct: "b",
-        feedback: "Ácido fólico, deficiencia, homocisteína, síntesis de ADN y riesgo cardiovascular."
+        correct: ["a", "d"]
       },
       {
-        question: "Respecto a la vitamina C, se puede afirmar que:",
+        question: "1. ¿Cuál es la vitamina que en exceso provoca una carcinoidosis?",
+        type: "multiple",
         options: {
-          a: "Actúa como donante directo de grupos metilo en la metilación",
-          b: "Es esencial para la hidroxilación de prolina y lisina en el colágeno",
-          c: "Inhibe la formación de radicales libres a nivel nuclear",
-          d: "Regula directamente la síntesis de ADN a través de grupos metilo"
-        },
-        correct: "b",
-        feedback: "Vitamina C, hidroxilación de prolina y lisina, síntesis de colágeno y reparación tisular."
-      },
-      {
-        question: "El consumo crónico de alcohol se asocia principalmente a la deficiencia de:",
-        options: {
-          a: "Vitamina D",
-          b: "Vitamina B1 (tiamina)",
-          c: "Vitamina C",
+          a: "Vitamina A",
+          b: "Tocoferol",
+          c: "Vitamina D3",
           d: "Vitamina K"
         },
-        correct: "b",
-        feedback: "Alcoholismo, deficiencia de tiamina, vitamina B1, riesgo de beriberi y síndrome de Wernicke-Korsakoff."
+        correct: "a"
       },
       {
-        question: "El uso prolongado de anticonvulsivos puede interferir con el metabolismo del ácido fólico, provocando:",
+        question: "2. La función de la warfarina es:",
+        type: "multiple",
         options: {
-          a: "Anemia hemolítica",
-          b: "Anemia megaloblástica",
-          c: "Anemia aplásica",
-          d: "Anemia sideroblástica"
+          a: "Es un antibiótico de amplio espectro",
+          b: "Antioxidante",
+          c: "Analgésica",
+          d: "Anticoagulante"
         },
-        correct: "b",
-        feedback: "Anticonvulsivos, interferencia en ácido fólico, deficiencia y desarrollo de anemia megaloblástica."
+        correct: "d"
+      },
+      {
+        question: "3. La falta de esta vitamina en el núcleo podría tener un aspecto deforme, megaloblástico, anemia macrocítica, deficiencia de hierro, defecto del tubo neural, espina bífida. Utilizado como fármaco para enfermedades neoplásicas. Marque la respuesta correcta:",
+        type: "multiple",
+        options: {
+          a: "Vitamina B9",
+          b: "Vitamina B12",
+          c: "Vitamina B2",
+          d: "Vitamina B6"
+        },
+        correct: "a"
+      },
+      {
+        question: "4. La piridoxina se refiere a:",
+        type: "multiple",
+        options: {
+          a: "Vitamina B2",
+          b: "Vitamina B6",
+          c: "Vitamina B12",
+          d: "Vitamina B1"
+        },
+        correct: "b"
+      },
+      {
+        question: "5. ¿Cuál de las opciones es incorrecta en cuanto a las vitaminas hidrosolubles se refiere?",
+        type: "multiple",
+        options: {
+          a: "Poco tóxicas",
+          b: "Se excretan rápido",
+          c: "Tienen acción coenzima",
+          d: "Se producen y almacenan en el organismo"
+        },
+        correct: "d"
+      },
+      {
+        question: "6. Las vitaminas liposolubles, marque el enunciado correcto:",
+        type: "multiple",
+        options: {
+          a: "Existen 3 tipos de vitaminas liposolubles",
+          b: "Se producen y almacenan en el cuerpo",
+          c: "No se producen en el organismo",
+          d: "Se hidrolizan en saponificación"
+        },
+        correct: "b"
       }
     ];
 
     let currentQuestion = 0;
+    const userAnswers = {}; // Almacena las respuestas del usuario por índice
 
+    // Crea una lista de navegación con botones para cada pregunta
+    function createNavList() {
+      const navDiv = document.getElementById("navList");
+      navDiv.innerHTML = "";
+      questions.forEach((q, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = index + 1;
+        btn.onclick = () => { currentQuestion = index; loadQuestion(); };
+        navDiv.appendChild(btn);
+      });
+    }
+
+    // Cargar la pregunta actual
     function loadQuestion() {
       const quizDiv = document.getElementById("quiz");
       quizDiv.innerHTML = "";
-      if (currentQuestion < questions.length) {
-        const q = questions[currentQuestion];
-        let html = `<div class="question"><strong>Pregunta ${currentQuestion + 1}:</strong> ${q.question}</div>`;
+      const q = questions[currentQuestion];
+      let html = `<div class="question-title"><strong>Pregunta ${currentQuestion + 1}:</strong> ${q.question}</div>`;
+      
+      // Según el tipo de pregunta se renderiza de forma distinta
+      if (q.type === "multiple") {
         html += `<div class="options">`;
         for (let key in q.options) {
-          html += `<div>
-                     <input type="radio" name="option" value="${key}" id="option_${key}">
-                     <label for="option_${key}">${key}) ${q.options[key]}</label>
-                   </div>`;
+          html += `<div class="option-item">
+                    <input type="radio" name="option" id="opt_${key}" value="${key}"
+                    ${userAnswers[currentQuestion] === key ? "checked" : ""}>
+                    <label for="opt_${key}">${key}) ${q.options[key]}</label>
+                  </div>`;
         }
         html += `</div>`;
-        html += `<button onclick="submitAnswer()">Enviar respuesta</button>`;
-        html += `<div id="feedback" class="feedback"></div>`;
-        quizDiv.innerHTML = html;
+      } else if (q.type === "multiple-select") {
+        html += `<div class="options">`;
+        for (let key in q.options) {
+          // Si hay respuesta previa, se comprueba si la opción está seleccionada
+          const checked = userAnswers[currentQuestion] && userAnswers[currentQuestion].includes(key) ? "checked" : "";
+          html += `<div class="option-item">
+                    <input type="checkbox" name="option" id="opt_${key}" value="${key}" ${checked}>
+                    <label for="opt_${key}">${key}) ${q.options[key]}</label>
+                  </div>`;
+        }
+        html += `</div>`;
+      } else if (q.type === "matching") {
+        html += `<div class="matching">`;
+        q.leftItems.forEach((item, idx) => {
+          // Recupera la respuesta previa (si existe) para cada ítem
+          const selVal = userAnswers[currentQuestion] && userAnswers[currentQuestion][idx] ? userAnswers[currentQuestion][idx] : "";
+          html += `<div class="match-item">
+                     <strong>${idx + 1}. ${item}</strong> 
+                     <select data-index="${idx}">
+                       <option value="">-- Seleccione --</option>`;
+          for (let key in q.matchOptions) {
+            html += `<option value="${key}" ${selVal === key ? "selected" : ""}>${key}) ${q.matchOptions[key]}</option>`;
+          }
+          html += `  </select>
+                   </div>`;
+        });
+        html += `</div>`;
+      }
+      
+      // Botón para enviar respuesta
+      html += `<button onclick="submitAnswer()">Enviar respuesta</button>`;
+      // Div para mostrar retroalimentación (correcto/incorrecto)
+      html += `<div class="feedback" id="feedback"></div>`;
+      quizDiv.innerHTML = html;
+    }
+
+    // Función para evaluar la respuesta de la pregunta actual
+    function submitAnswer() {
+      const q = questions[currentQuestion];
+      let isCorrect = false;
+      if (q.type === "multiple") {
+        const options = document.getElementsByName("option");
+        let selected;
+        for (let opt of options) {
+          if (opt.checked) { selected = opt.value; break; }
+        }
+        if (!selected) { alert("Por favor, selecciona una respuesta."); return; }
+        userAnswers[currentQuestion] = selected;
+        isCorrect = (selected === q.correct);
+      } else if (q.type === "multiple-select") {
+        const options = document.getElementsByName("option");
+        let selected = [];
+        for (let opt of options) {
+          if (opt.checked) { selected.push(opt.value); }
+        }
+        if (selected.length === 0) { alert("Por favor, selecciona al menos una opción."); return; }
+        // Ordenamos para comparar
+        selected.sort();
+        let correctSorted = q.correct.slice().sort();
+        userAnswers[currentQuestion] = selected;
+        isCorrect = (JSON.stringify(selected) === JSON.stringify(correctSorted));
+      } else if (q.type === "matching") {
+        const selects = document.querySelectorAll('.matching select');
+        let mapping = [];
+        for (let sel of selects) {
+          mapping.push(sel.value);
+        }
+        // Verifica que se haya seleccionado algo en cada uno
+        if (mapping.includes("")) { alert("Por favor, selecciona una opción para cada ítem."); return; }
+        userAnswers[currentQuestion] = mapping;
+        // Comparar con el mapeo correcto
+        isCorrect = mapping.every((val, idx) => val === q.correctMapping[idx]);
+      }
+      const feedbackDiv = document.getElementById("feedback");
+      if (isCorrect) {
+        feedbackDiv.innerHTML = `<span style="color: green;">¡Correcto!</span>`;
       } else {
-        quizDiv.innerHTML = "<h2>Examen completado. ¡Buen trabajo!</h2>";
+        feedbackDiv.innerHTML = `<span style="color: red;">Incorrecto. La respuesta correcta es: ${formatCorrect(q)}</span>`;
       }
     }
 
-    function submitAnswer() {
-      const options = document.getElementsByName("option");
-      let selected;
-      for (let i = 0; i < options.length; i++) {
-        if (options[i].checked) {
-          selected = options[i].value;
-          break;
+    // Función auxiliar para formatear la respuesta correcta según el tipo
+    function formatCorrect(q) {
+      if (q.type === "multiple" || q.type === "multiple-select") {
+        if (typeof q.correct === "string") {
+          return q.correct;
+        } else {
+          return q.correct.join(", ");
         }
+      } else if (q.type === "matching") {
+        return q.correctMapping.join(", ");
       }
-      if (!selected) {
-        alert("Por favor, selecciona una respuesta.");
-        return;
+      return "";
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        loadQuestion();
       }
-      const q = questions[currentQuestion];
-      const feedbackDiv = document.getElementById("feedback");
-      if (selected === q.correct) {
-        feedbackDiv.innerHTML = `<p style="color:green;">¡Correcto!</p><p>Palabras clave: ${q.feedback}</p>`;
-      } else {
-        feedbackDiv.innerHTML = `<p style="color:red;">Incorrecto. La respuesta correcta es: ${q.correct}</p><p>Palabras clave: ${q.feedback}</p>`;
-      }
-      // Deshabilitar opciones para evitar cambios
-      const optionsInputs = document.getElementsByName("option");
-      for (let i = 0; i < optionsInputs.length; i++) {
-        optionsInputs[i].disabled = true;
-      }
-      // Cambiar el botón para pasar a la siguiente pregunta
-      const btn = document.querySelector("button");
-      btn.innerText = "Siguiente pregunta";
-      btn.onclick = function() {
+    }
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
         currentQuestion++;
         loadQuestion();
       }
     }
 
+    // Inicializa la navegación y carga la primera pregunta
+    createNavList();
     loadQuestion();
   </script>
 </body>
