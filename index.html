@@ -1,341 +1,362 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reproductor con Subtítulos</title>
-    <style>
-        /* Configuración base */
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #4a90e2, #c4e0e5);
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .container {
-            position: relative;
-            width: 90%;
-            max-width: 600px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .card h1 {
-            font-size: 26px;
-            margin-bottom: 20px;
-            color: #f5f5f5;
-        }
-
-        .card p {
-            font-size: 16px;
-            margin-bottom: 25px;
-            color: #e0e0e0;
-        }
-
-        .card label {
-            display: block;
-            margin-bottom: 20px;
-            font-size: 16px;
-            color: #f0f0f0;
-        }
-
-        .card input {
-            display: block;
-            margin-top: 10px;
-            width: 100%;
-            padding: 12px;
-            font-size: 14px;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-
-        .card input::file-selector-button {
-            background-color: #5cacee;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .card input::file-selector-button:hover {
-            background-color: #3d94d6;
-        }
-
-        #play-button {
-            background: linear-gradient(135deg, #5cacee, #82d4f9);
-            color: #fff;
-            border: none;
-            border-radius: 50px;
-            padding: 12px 20px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        #play-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .theme-toggle {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .theme-toggle button {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-
-        .theme-toggle button:hover {
-            transform: scale(1.1);
-            background-color: #444;
-        }
-
-        .fullscreen-toggle {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .fullscreen-toggle:hover {
-            background-color: #444;
-            transform: scale(1.1);
-        }
-
-        .info-icon {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            font-size: 18px;
-            color: #82ccdd;
-            cursor: pointer;
-        }
-
-        /* Modo claro */
-        body.light-mode {
-            background: linear-gradient(135deg, #e3f2fd, #ffffff);
-            color: #212121;
-        }
-
-        body.light-mode .card {
-            background: rgba(0, 0, 0, 0.05);
-            color: #212121;
-        }
-
-        body.light-mode .card h1,
-        body.light-mode .card p {
-            color: #000;
-        }
-
-        body.light-mode .card label {
-            color: #333;
-        }
-
-        body.light-mode .theme-toggle button {
-            background-color: rgba(255, 255, 255, 0.8);
-            color: #000;
-        }
-
-        body.light-mode .fullscreen-toggle {
-            background-color: rgba(0, 0, 0, 0.1);
-            color: #000;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #fff;
-            color: #000;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-        }
-
-        .modal-header {
-            font-size: 20px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .modal p {
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .modal-close {
-            margin-top: 20px;
-            background: #d9534f;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .modal-close:hover {
-            background: #c9302c;
-        }
-
-        .modal-backdrop {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Examen de Vitaminas - Bioquímica</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    .question { font-size: 1.2em; margin-bottom: 10px; }
+    .options { margin-bottom: 20px; }
+    .options div { margin-bottom: 8px; }
+    .feedback { margin-top: 20px; font-style: italic; }
+    button { padding: 8px 12px; margin: 5px 0; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="info-icon" id="manual-icon">📘</div>
-            <h1>Reproductor con Subtítulos</h1>
-            <p>Selecciona tu video y archivo de subtítulos</p>
-            <form>
-                <label for="video">
-                    <span>🎥 Video (mp4)</span>
-                    <input type="file" id="video" accept=".mp4">
-                </label>
-                <label for="subtitles">
-                    <span>📝 Subtítulos (srt)</span>
-                    <input type="file" id="subtitles" accept=".srt">
-                </label>
-                <button type="button" id="play-button">▶️ Reproducir</button>
-            </form>
-        </div>
-        <div class="theme-toggle">
-            <button id="dark-mode-toggle">🌙</button>
-            <button id="instructions-toggle">📜</button>
-            <button id="fullscreen-toggle">🔳</button>
-        </div>
-        <button class="fullscreen-toggle" id="play-pause-toggle">⏸️</button>
-    </div>
+  <div class="container">
+    <div id="quiz"></div>
+  </div>
 
-    <!-- Modal -->
-    <div class="modal-backdrop" id="modal-backdrop"></div>
-    <div class="modal" id="manual-modal">
-        <div class="modal-header">Manual de Usuario</div>
-        <p>
-            1. Carga un archivo de video en formato MP4.<br>
-            2. Carga un archivo de subtítulos en formato SRT.<br>
-            3. Haz clic en "Reproducir" para comenzar.<br>
-            4. Utiliza los botones para alternar entre modo claro/oscuro y pantalla completa.
-        </p>
-        <button class="modal-close" id="close-modal">Cerrar</button>
-    </div>
+  <script>
+    // Array de preguntas con opciones, respuesta correcta y retroalimentación en palabras clave
+    const questions = [
+      {
+        question: "¿Cuál es la tríada clásica de síntomas en la deficiencia de niacina (vitamina B3)?",
+        options: {
+          a: "Dermatitis, diarrea, demencia",
+          b: "Estomatitis, anemia y dolor articular",
+          c: "Hipotensión, bradicardia y anorexia",
+          d: "Fatiga, parestesias y disfagia"
+        },
+        correct: "a",
+        feedback: "Pellagra, deficiencia de niacina, síntomas dermatológicos, gastrointestinales y neurológicos."
+      },
+      {
+        question: "¿Qué forma activa de la vitamina B6 actúa como coenzima en reacciones de transaminación?",
+        options: {
+          a: "Tiamina pirofosfato",
+          b: "Fosfato de piridoxal (PLP)",
+          c: "Flavina mononucleótido (FMN)",
+          d: "Ácido fólico"
+        },
+        correct: "b",
+        feedback: "Vitamina B6, PLP, transaminación, metabolismo de aminoácidos."
+      },
+      {
+        question: "La deficiencia de vitamina B12 se asocia principalmente con:",
+        options: {
+          a: "Anemia ferropénica",
+          b: "Anemia megaloblástica y neuropatía subaguda combinada",
+          c: "Anemia hemolítica",
+          d: "Anemia sideroblástica"
+        },
+        correct: "b",
+        feedback: "B12, anemia megaloblástica, neuropatía, síntesis de ADN y mantenimiento de la mielina."
+      },
+      {
+        question: "La vitamina C facilita la absorción del hierro al:",
+        options: {
+          a: "Incrementar la secreción de ácido gástrico",
+          b: "Reducir el hierro férrico (Fe³⁺) a hierro ferroso (Fe²⁺)",
+          c: "Inhibir la formación de complejos insolubles",
+          d: "Estimular la producción de transferrina"
+        },
+        correct: "b",
+        feedback: "Vitamina C, reducción de hierro, mejora de la absorción y prevención de la anemia."
+      },
+      {
+        question: "El ácido pantoténico (vitamina B5) es esencial para:",
+        options: {
+          a: "La síntesis de coenzima A",
+          b: "La formación de NADPH",
+          c: "La síntesis de FAD",
+          d: "La producción de vitamina K"
+        },
+        correct: "a",
+        feedback: "Vitamina B5, coenzima A, metabolismo de ácidos grasos y ciclo de Krebs."
+      },
+      {
+        question: "La vitamina B7 (biotina) actúa como coenzima en reacciones de:",
+        options: {
+          a: "Descarboxilación",
+          b: "Carboxilación",
+          c: "Oxidación-reducción",
+          d: "Metilación"
+        },
+        correct: "b",
+        feedback: "Biotina, vitamina B7, carboxilación, metabolismo de ácidos grasos y gluconeogénesis."
+      },
+      {
+        question: "Para la absorción intestinal de la vitamina B12 es esencial la unión con:",
+        options: {
+          a: "Factor intrínseco",
+          b: "Transcobalamina",
+          c: "Ácido fólico",
+          d: "Coenzima Q"
+        },
+        correct: "a",
+        feedback: "Vitamina B12, factor intrínseco, absorción en íleon y prevención de anemia perniciosa."
+      },
+      {
+        question: "¿Cuál de las siguientes funciones depende críticamente de la vitamina A en el proceso visual?",
+        options: {
+          a: "Activación de melanopsina en los conos",
+          b: "Formación de la rodopsina en los bastones",
+          c: "Regulación de la fototransducción en células ganglionares",
+          d: "Conversión de retinol a retinoestearato"
+        },
+        correct: "b",
+        feedback: "Vitamina A, rodopsina, visión nocturna, retinol y función en conos y bastones."
+      },
+      {
+        question: "La principal función de la vitamina D en el metabolismo óseo es:",
+        options: {
+          a: "Estimular la resorción ósea",
+          b: "Facilitar la absorción intestinal de calcio y fósforo",
+          c: "Inhibir la actividad osteoclástica",
+          d: "Promover la síntesis de colágeno"
+        },
+        correct: "b",
+        feedback: "Vitamina D, absorción de calcio y fósforo, mineralización ósea y salud del esqueleto."
+      },
+      {
+        question: "La hipervitaminosis A puede manifestarse clínicamente con:",
+        options: {
+          a: "Hipercalcemia y nefrocalcinosis",
+          b: "Hepatotoxicidad y aumento de presión intracraneal",
+          c: "Alteraciones en el ciclo menstrual",
+          d: "Hipoglucemia y aumento de insulina"
+        },
+        correct: "b",
+        feedback: "Exceso de vitamina A, hepatotoxicidad, presión intracraneal elevada y toxicidad sistémica."
+      },
+      {
+        question: "La deficiencia de vitamina E se asocia principalmente con:",
+        options: {
+          a: "Neuropatía central y ataxia",
+          b: "Ceguera nocturna",
+          c: "Dermatitis seborreica",
+          d: "Alteraciones en la coagulación"
+        },
+        correct: "a",
+        feedback: "Vitamina E, antioxidante, protección neuronal y prevención de ataxia y daño oxidativo."
+      },
+      {
+        question: "La administración prolongada de isoniazida se relaciona con la deficiencia de:",
+        options: {
+          a: "Vitamina B1",
+          b: "Vitamina B6",
+          c: "Vitamina B12",
+          d: "Ácido fólico"
+        },
+        correct: "b",
+        feedback: "Isoniazida, interferencia con vitamina B6, riesgo de neuropatía y necesidad de suplementación."
+      },
+      {
+        question: "La niacina (vitamina B3) es precursora de:",
+        options: {
+          a: "Coenzima A",
+          b: "NAD⁺ y NADP⁺",
+          c: "FAD y FMN",
+          d: "ATP"
+        },
+        correct: "b",
+        feedback: "Vitamina B3, niacina, NAD⁺, NADP⁺, metabolismo energético y reacciones redox."
+      },
+      {
+        question: "La riboflavina (vitamina B2) es necesaria para la formación de:",
+        options: {
+          a: "Coenzima Q",
+          b: "FAD y FMN, implicadas en reacciones redox",
+          c: "Ácido fólico",
+          d: "Vitamina K"
+        },
+        correct: "b",
+        feedback: "Vitamina B2, riboflavina, formación de FAD y FMN, reacciones redox y producción de energía."
+      },
+      {
+        question: "La función antioxidante de la vitamina E se basa en:",
+        options: {
+          a: "La eliminación de metales pesados",
+          b: "La protección de las membranas lipídicas contra la peroxidación",
+          c: "La activación de enzimas catalíticas en el núcleo",
+          d: "La inhibición de radicales hidroxilo en el citosol"
+        },
+        correct: "b",
+        feedback: "Vitamina E, antioxidante, protección de lípidos, prevención de peroxidación y daño celular."
+      },
+      {
+        question: "¿Cuál es la forma circulante más abundante y estable de la vitamina D en el plasma?",
+        options: {
+          a: "1,25-dihidroxicolecalciferol",
+          b: "25-hidroxicolecalciferol",
+          c: "24,25-dihidroxicolecalciferol",
+          d: "Colecalciferol"
+        },
+        correct: "b",
+        feedback: "Vitamina D, 25(OH)D, forma estable en plasma, evaluación clínica y almacenamiento."
+      },
+      {
+        question: "En relación con las vitaminas liposolubles, es correcto afirmar que:",
+        options: {
+          a: "Se eliminan rápidamente por vía renal",
+          b: "Se almacenan en el hígado y tejido adiposo",
+          c: "Requieren un transporte activo para su absorción intestinal",
+          d: "Son menos propensas a causar toxicidad"
+        },
+        correct: "b",
+        feedback: "Vitaminas liposolubles, almacenamiento en hígado y grasa, riesgo de toxicidad en exceso."
+      },
+      {
+        question: "El ácido retinoico, derivado de la vitamina A, participa en:",
+        options: {
+          a: "La síntesis de rodopsina",
+          b: "La regulación de la expresión génica y la diferenciación celular",
+          c: "La formación de coenzima A",
+          d: "La degradación de la melanina"
+        },
+        correct: "b",
+        feedback: "Ácido retinoico, vitamina A, regulación génica, diferenciación celular y desarrollo embrionario."
+      },
+      {
+        question: "La vitamina K es esencial para la activación de proteínas como la osteocalcina, la cual:",
+        options: {
+          a: "Regula la respuesta inflamatoria",
+          b: "Contribuye a la mineralización ósea",
+          c: "Estimula la absorción de calcio en el intestino",
+          d: "Participa en la síntesis de colágeno"
+        },
+        correct: "b",
+        feedback: "Vitamina K, osteocalcina, coagulación, activación de proteínas y mineralización ósea."
+      },
+      {
+        question: "Aunque no es una vitamina, la coenzima Q10 es fundamental en:",
+        options: {
+          a: "El transporte de electrones en la cadena respiratoria",
+          b: "La síntesis de ácidos grasos",
+          c: "La regulación del ciclo celular",
+          d: "La degradación de proteínas"
+        },
+        correct: "a",
+        feedback: "Coenzima Q10, transporte de electrones, función mitocondrial y producción de ATP."
+      },
+      {
+        question: "La deficiencia de riboflavina (vitamina B2) puede manifestarse clínicamente con:",
+        options: {
+          a: "Estomatitis, labios agrietados y dermatitis",
+          b: "Ceguera nocturna",
+          c: "Neuropatía periférica",
+          d: "Ictericia"
+        },
+        correct: "a",
+        feedback: "Vitamina B2, riboflavina, deficiencia, estomatitis, dermatitis y labios agrietados."
+      },
+      {
+        question: "Una deficiencia de ácido fólico se relaciona con el aumento de los niveles plasmáticos de:",
+        options: {
+          a: "Colesterol",
+          b: "Homocisteína",
+          c: "Ácido láctico",
+          d: "Creatinina"
+        },
+        correct: "b",
+        feedback: "Ácido fólico, deficiencia, homocisteína, síntesis de ADN y riesgo cardiovascular."
+      },
+      {
+        question: "Respecto a la vitamina C, se puede afirmar que:",
+        options: {
+          a: "Actúa como donante directo de grupos metilo en la metilación",
+          b: "Es esencial para la hidroxilación de prolina y lisina en el colágeno",
+          c: "Inhibe la formación de radicales libres a nivel nuclear",
+          d: "Regula directamente la síntesis de ADN a través de grupos metilo"
+        },
+        correct: "b",
+        feedback: "Vitamina C, hidroxilación de prolina y lisina, síntesis de colágeno y reparación tisular."
+      },
+      {
+        question: "El consumo crónico de alcohol se asocia principalmente a la deficiencia de:",
+        options: {
+          a: "Vitamina D",
+          b: "Vitamina B1 (tiamina)",
+          c: "Vitamina C",
+          d: "Vitamina K"
+        },
+        correct: "b",
+        feedback: "Alcoholismo, deficiencia de tiamina, vitamina B1, riesgo de beriberi y síndrome de Wernicke-Korsakoff."
+      },
+      {
+        question: "El uso prolongado de anticonvulsivos puede interferir con el metabolismo del ácido fólico, provocando:",
+        options: {
+          a: "Anemia hemolítica",
+          b: "Anemia megaloblástica",
+          c: "Anemia aplásica",
+          d: "Anemia sideroblástica"
+        },
+        correct: "b",
+        feedback: "Anticonvulsivos, interferencia en ácido fólico, deficiencia y desarrollo de anemia megaloblástica."
+      }
+    ];
 
-    <script>
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const instructionsToggle = document.getElementById('instructions-toggle');
-        const fullscreenToggle = document.getElementById('fullscreen-toggle');
-        const playPauseToggle = document.getElementById('play-pause-toggle');
-        const body = document.body;
+    let currentQuestion = 0;
 
-        const manualIcon = document.getElementById('manual-icon');
-        const modal = document.getElementById('manual-modal');
-        const modalBackdrop = document.getElementById('modal-backdrop');
-        const closeModal = document.getElementById('close-modal');
+    function loadQuestion() {
+      const quizDiv = document.getElementById("quiz");
+      quizDiv.innerHTML = "";
+      if (currentQuestion < questions.length) {
+        const q = questions[currentQuestion];
+        let html = `<div class="question"><strong>Pregunta ${currentQuestion + 1}:</strong> ${q.question}</div>`;
+        html += `<div class="options">`;
+        for (let key in q.options) {
+          html += `<div>
+                     <input type="radio" name="option" value="${key}" id="option_${key}">
+                     <label for="option_${key}">${key}) ${q.options[key]}</label>
+                   </div>`;
+        }
+        html += `</div>`;
+        html += `<button onclick="submitAnswer()">Enviar respuesta</button>`;
+        html += `<div id="feedback" class="feedback"></div>`;
+        quizDiv.innerHTML = html;
+      } else {
+        quizDiv.innerHTML = "<h2>Examen completado. ¡Buen trabajo!</h2>";
+      }
+    }
 
-        // Alternar modo oscuro
-        darkModeToggle.addEventListener('click', () => {
-            body.classList.toggle('light-mode');
-        });
+    function submitAnswer() {
+      const options = document.getElementsByName("option");
+      let selected;
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].checked) {
+          selected = options[i].value;
+          break;
+        }
+      }
+      if (!selected) {
+        alert("Por favor, selecciona una respuesta.");
+        return;
+      }
+      const q = questions[currentQuestion];
+      const feedbackDiv = document.getElementById("feedback");
+      if (selected === q.correct) {
+        feedbackDiv.innerHTML = `<p style="color:green;">¡Correcto!</p><p>Palabras clave: ${q.feedback}</p>`;
+      } else {
+        feedbackDiv.innerHTML = `<p style="color:red;">Incorrecto. La respuesta correcta es: ${q.correct}</p><p>Palabras clave: ${q.feedback}</p>`;
+      }
+      // Deshabilitar opciones para evitar cambios
+      const optionsInputs = document.getElementsByName("option");
+      for (let i = 0; i < optionsInputs.length; i++) {
+        optionsInputs[i].disabled = true;
+      }
+      // Cambiar el botón para pasar a la siguiente pregunta
+      const btn = document.querySelector("button");
+      btn.innerText = "Siguiente pregunta";
+      btn.onclick = function() {
+        currentQuestion++;
+        loadQuestion();
+      }
+    }
 
-        // Mostrar instrucciones
-        instructionsToggle.addEventListener('click', () => {
-            alert('Instrucciones:\n1. Selecciona un archivo de video en formato MP4.\n2. Selecciona un archivo de subtítulos en formato SRT.\n3. Haz clic en el botón "Reproducir".');
-        });
-
-        // Alternar pantalla completa
-        fullscreenToggle.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
-        });
-
-        // Alternar pausa/reproducción
-        let isPlaying = false;
-        playPauseToggle.addEventListener('click', () => {
-            isPlaying = !isPlaying;
-            playPauseToggle.textContent = isPlaying ? '▶️' : '⏸️';
-        });
-
-        // Mostrar modal
-        manualIcon.addEventListener('click', () => {
-            modal.style.display = 'block';
-            modalBackdrop.style.display = 'block';
-        });
-
-        // Cerrar modal
-        closeModal.addEventListener('click', () => {
-            modal.style.display = 'none';
-            modalBackdrop.style.display = 'none';
-        });
-
-        modalBackdrop.addEventListener('click', () => {
-            modal.style.display = 'none';
-            modalBackdrop.style.display = 'none';
-        });
-    </script>
+    loadQuestion();
+  </script>
 </body>
 </html>
